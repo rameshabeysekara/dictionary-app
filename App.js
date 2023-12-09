@@ -4,23 +4,18 @@ import {
   PaperProvider,
 } from "react-native-paper";
 import { name as appName } from "./app.json";
-import { StatusBar } from "expo-status-bar";
-import { AppRegistry, Alert, View } from "react-native";
+import { AppRegistry, Alert } from "react-native";
 import Home from "./src/components/Home/Home";
 import Favorites from "./src/components/Favorites/Favorites";
 import Settings from "./src/components/Settings/Settings";
-import styles from "./src/styles/main";
 import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesome, Entypo, Fontisto } from "@expo/vector-icons";
-import { load as databaseLoad } from "./src/database";
-import * as SplashScreen from "expo-splash-screen";
-import { Colors } from "./src/styles/colors";
-import * as Notifications from "expo-notifications";
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "./src/styles/colors";
+import { load as databaseLoad } from "./src/database";
+import * as SplashScreen from "expo-splash-screen";
+import * as Notifications from "expo-notifications";
 
 const Tab = createMaterialBottomTabNavigator();
 const theme = {
@@ -32,10 +27,8 @@ const theme = {
   },
 };
 
-// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-//Handle notification display
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -51,7 +44,6 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-  //Listem to received notifcations
   useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
@@ -64,7 +56,6 @@ export default function App() {
     };
   }, []);
 
-  // State for the list of Words.
   const [words, setWords] = useState([]);
 
   useEffect(() => {
@@ -98,7 +89,10 @@ export default function App() {
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
-        <Tab.Navigator>
+        <Tab.Navigator
+          initialRouteName="Home"
+          activeColor={theme.colors.primary}
+        >
           <Tab.Screen
             name="Home"
             options={{

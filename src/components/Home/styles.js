@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     width: "100%",
     borderColor: Colors.primary,
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 10,
     padding: 20,
   },
@@ -31,16 +31,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   word: {
-    fontSize: 24,
-    color: Colors.primary,
-    fontWeight: "bold",
     margin: 10,
   },
   meaning: {
-    fontSize: 22,
-    color: Colors.primary,
-    fontWeight: "normal",
     margin: 10,
+    paddingTop: 10,
   },
   buttonContainer: {
     marginTop: 15,

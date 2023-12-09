@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "../../styles/colors";
 
 const styles = StyleSheet.create({
   container: {
@@ -7,22 +8,14 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? 30 : 90,
   },
   label: {
-    //flex: 4,
-    color: "#777",
+    color: Colors.text,
     fontSize: 16,
   },
-  switch: {
-    container: {
-      //flex: 1,
-      alignItems: "center",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 20,
-    },
-    label: {
-      color: "#5e5e5e",
-      fontSize: 16,
-    },
+  switchContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
   },
 });
 

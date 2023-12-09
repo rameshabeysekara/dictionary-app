@@ -1,32 +1,7 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Colors } from "../../../styles/colors";
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: "stretch",
-    backgroundColor: Colors.headerText,
-    margin: 10,
-    padding: 15,
-    borderRadius: 7,
-    borderWidth: 1,
-    borderColor: Colors.primary,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "bold",
-    color: Colors.text,
-  },
-  description: {
-    fontSize: 17,
-    fontWeight: "bold",
-    color: Colors.text,
-    paddingTop: 30,
-  },
-  text: {
-    fontSize: 13,
-    color: Colors.text,
-  },
-
   modal: {
     container: {
       flex: 1,
@@ -61,35 +36,7 @@ const styles = StyleSheet.create({
   },
 
   options: {
-    paddingTop: Platform.OS === "ios" ? 20 : 10,
-  },
-
-  switch: {
-    container: {
-      alignItems: "center",
-    },
-    label: {
-      paddingTop: Platform.OS === "ios" ? 10 : 0,
-      fontSize: 12,
-      color: Colors.text,
-    },
-  },
-
-  remove: {
-    container: {
-      alignItems: "flex-end",
-      justifyContent: "center",
-      textAlign: "center",
-    },
-    icon: {
-      color: Colors.warning,
-      alignSelf: "center",
-    },
-    label: {
-      paddingTop: 5,
-      fontSize: 12,
-      color: Colors.warning,
-    },
+    paddingTop: 10,
   },
 });
 

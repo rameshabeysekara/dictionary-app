@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
 import * as Speech from "expo-speech";
-import { View, Text, SafeAreaView, ScrollView, Alert } from "react-native";
+import { View, SafeAreaView, ScrollView, Alert } from "react-native";
 import { getWordOfTheDay, getWordMeaning } from "../../utils";
 import styles from "./styles";
-import { Button, Searchbar } from "react-native-paper";
+import {
+  Button,
+  Searchbar,
+  Card,
+  Title,
+  Text,
+  Paragraph,
+} from "react-native-paper";
 import { save as databaseSave } from "../../database";
 
 export default function Home(props) {
@@ -80,7 +87,7 @@ export default function Home(props) {
           <View style={styles.wordBox}>
             <View style={styles.wordContainer}>
               <View style={styles.wordContainerWord}>
-                <Text style={styles.word}>{wordOfTheDay.word}</Text>
+                <Title style={styles.word}>{wordOfTheDay.word}</Title>
               </View>
               <View style={styles.wordContainerWord}>
                 <Button
@@ -93,7 +100,7 @@ export default function Home(props) {
                 </Button>
               </View>
             </View>
-            <Text style={styles.meaning}>{wordOfTheDay.meaning}</Text>
+            <Paragraph style={styles.meaning}>{wordOfTheDay.meaning}</Paragraph>
             <View style={styles.buttonContainer}>
               <Button
                 icon="playlist-star"
@@ -111,15 +118,15 @@ export default function Home(props) {
                 onChangeText={(text) => setSearchQuery(text)}
                 value={searchQuery}
                 onIconPress={onSearch}
-                searchAccessibilityLabel="Search" // Accessibility label for search button
-                clearAccessibilityLabel="Clear" // Accessibility label for clear button
+                searchAccessibilityLabel="Search"
+                clearAccessibilityLabel="Clear"
               />
             </View>
             {searchQuery !== "" && (
               <>
                 <View style={styles.wordContainer}>
                   <View style={styles.wordContainerWord}>
-                    <Text style={styles.word}>{searchedWord.word}</Text>
+                    <Title style={styles.word}>{searchedWord.word}</Title>
                   </View>
                   <View style={styles.wordContainerWord}>
                     <Button
@@ -132,7 +139,7 @@ export default function Home(props) {
                     </Button>
                   </View>
                 </View>
-                <Text style={styles.meaning}>{searchedWord.meaning}</Text>
+                <Paragraph style={styles.meaning}>{searchedWord.meaning}</Paragraph>
                 <View style={styles.buttonContainer}>
                   <Button
                     icon="playlist-star"

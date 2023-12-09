@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { View, Pressable, SafeAreaView, Text } from "react-native";
-import styles from "./styles";
+import { View, Pressable, SafeAreaView, Text, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import { Title, Switch } from "react-native-paper";
+import styles from "./styles";
 
 export default function Settings() {
   const [reminder, setReminder] = useState(false);
@@ -36,11 +36,9 @@ export default function Settings() {
     <SafeAreaView>
       <View style={styles.container}>
         <Title>Notifications</Title>
-        <View style={styles.switch.container}>
+        <View style={styles.switchContainer}>
           <Pressable onPress={handleReminderPress}>
-            <Text style={styles.switch.label}>
-              Set word of the day Reminder
-            </Text>
+            <Text style={styles.label}>Set word of the day Reminder</Text>
           </Pressable>
           <Switch value={reminder} onValueChange={handleReminderPress} />
         </View>
@@ -60,8 +58,8 @@ async function scheduleReminder() {
     }
 
     const trigger = {
-      hour: 8, // Set the hour to 8 AM
-      minute: 0, // Set the minute to 0 (start of the hour)
+      hour: 8,
+      minute: 0,
       repeats: true,
     };
 
@@ -101,16 +99,11 @@ async function cancelReminder() {
 
 async function getSchedule() {
   try {
-    const scheduledNotifications =
-      await Notifications.getAllScheduledNotificationsAsync();
+    const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
 
     const schedule = [];
     scheduledNotifications.forEach((scheduledNotification) => {
-      if (
-        scheduledNotification &&
-        scheduledNotification.content &&
-        scheduledNotification.content.data
-      ) {
+      if (scheduledNotification && scheduledNotification.content && scheduledNotification.content.data) {
         schedule.push({
           id: scheduledNotification.identifier,
           type: scheduledNotification.content.data.type || "unknown",
@@ -124,7 +117,6 @@ async function getSchedule() {
     return [];
   }
 }
-
 async function checkReminder() {
   const schedule = await getSchedule();
   return schedule.some((item) => item.type === "reminder");

@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { View, Text, Pressable, Modal, Switch, Alert } from "react-native";
-import styles from "./styles";
+import { View, Pressable, Modal, Alert } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 import * as database from "../../../database";
-import { Colors } from "../../../styles/colors";
-import { List, IconButton, Paragraph, Title, Button } from "react-native-paper";
+import { List, Title, Paragraph, Button } from "react-native-paper";
 
 export default function Word(props) {
   const [showModal, setShowModal] = useState(false);
@@ -22,8 +19,7 @@ export default function Word(props) {
         {
           text: "Confirm",
           onPress: () => {
-            database
-              .remove(props.word.id, { done: !props.word.done })
+            database.remove(props.word.id, { done: !props.word.done })
               .then((removed) => {
                 setShowModal(false);
                 if (removed) {
@@ -61,14 +57,12 @@ export default function Word(props) {
       <Modal visible={showModal} transparent={true}>
         <View style={styles.modal.container}>
           <View style={styles.modal.box}>
-            {/* Close Modal */}
             <Pressable onPress={handleModalToggle}>
               <View style={styles.close.container}>
                 <AntDesign name="closesquare" size={25} />
               </View>
             </Pressable>
 
-            {/* word Description */}
             <Title>{props.word.word}</Title>
             <Paragraph>{props.word.meaning}</Paragraph>
 
