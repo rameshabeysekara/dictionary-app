@@ -1,49 +1,29 @@
 import { useEffect, useState } from "react";
-import { View, Pressable, Platform, SafeAreaView } from "react-native";
-import { save as databaseSave } from "../../database";
+import { View, Pressable, SafeAreaView, Text } from "react-native";
 import styles from "./styles";
 import * as Notifications from "expo-notifications";
-import { Colors } from "../../styles/colors";
-import {
-  List,
-  IconButton,
-  Paragraph,
-  Title,
-  Button,
-  Switch,
-  Text,
-} from "react-native-paper";
+import { Title, Switch } from "react-native-paper";
 
 export default function Settings() {
   const [reminder, setReminder] = useState(false);
-  const [schedule, setSchedule] = useState([]);
 
   const handleReminderPress = async () => {
     if (!reminder) {
       const scheduled = await scheduleReminder();
       if (scheduled) {
         setReminder(true);
-        setSchedule(await getSchedule());
       }
     } else {
       const cancelled = await cancelReminder();
       if (cancelled) {
         setReminder(false);
-        setSchedule(await getSchedule());
       }
     }
   };
 
-  //Load scheduled reminders
   useEffect(() => {
     const fetchSchedule = async () => {
-      const previouslyScheduled = await getSchedule();
-      setSchedule(previouslyScheduled);
-
-      const hasReminder = previouslyScheduled.some(
-        (item) => item.type === "reminder"
-      );
-
+      const hasReminder = await checkReminder();
       if (hasReminder !== reminder) {
         setReminder(hasReminder);
       }
@@ -87,8 +67,8 @@ async function scheduleReminder() {
 
     const schedulingOptions = {
       content: {
-        title: "Todo Reminder",
-        body: "Remember to check your words",
+        title: "Word Of The Day Reminder",
+        body: "Remember to check your word of the day!",
       },
       trigger,
     };
@@ -106,10 +86,9 @@ async function scheduleReminder() {
 }
 
 async function cancelReminder() {
-  console.log("Cancel for: ", Platform.OS);
   let cancelled = false;
-
   const schedule = await getSchedule();
+
   for (const item of schedule) {
     if (item.type === "reminder") {
       await Notifications.cancelScheduledNotificationAsync(item.id);
@@ -142,5 +121,11 @@ async function getSchedule() {
     return schedule;
   } catch (error) {
     console.error("Error while getting schedule:", error);
+    return [];
   }
+}
+
+async function checkReminder() {
+  const schedule = await getSchedule();
+  return schedule.some((item) => item.type === "reminder");
 }
