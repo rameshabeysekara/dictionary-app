@@ -19,12 +19,7 @@ export default function Favorites(props) {
       <View style={styles.container}>
         <ScrollView>
           {props.words?.map((word, index) => (
-            <Word
-              key={index}
-              word={word}
-              onStatusChange={props.onStatusChange}
-              onWordRemoval={props.onWordRemoval}
-            />
+            <Word key={index} word={word} onWordRemoval={props.onWordRemoval} />
           ))}
         </ScrollView>
       </View>

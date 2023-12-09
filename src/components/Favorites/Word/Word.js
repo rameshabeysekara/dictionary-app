@@ -14,21 +14,6 @@ export default function Word(props) {
     setShowModal(!showModal);
   };
 
-  const handleStatusChangePress = () => {
-    database
-      .update(props.word.id, { done: !props.word.done })
-      .then((updated) => {
-        if (updated) {
-          props.onStatusChange(props.word.id);
-        } else {
-          Alert.alert(
-            "Database Update",
-            "There was an error updating the database. Please, try again later."
-          );
-        }
-      });
-  };
-
   const handleRemovePress = () => {
     Alert.alert(
       "Remove word",
@@ -40,9 +25,13 @@ export default function Word(props) {
             database
               .remove(props.word.id, { done: !props.word.done })
               .then((removed) => {
+                setShowModal(false);
                 if (removed) {
                   props.onWordRemoval(props.word.id);
-                  setShowModal(false);
+                  Alert.alert(
+                    "Database Update",
+                    "Data removed from the database."
+                  );
                 } else {
                   Alert.alert(
                     "Database Update",
@@ -75,7 +64,7 @@ export default function Word(props) {
             {/* Close Modal */}
             <Pressable onPress={handleModalToggle}>
               <View style={styles.close.container}>
-                <AntDesign name="closesquare" size={25} color={Colors.close} />
+                <AntDesign name="closesquare" size={25} />
               </View>
             </Pressable>
 

@@ -1,77 +1,152 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import * as Speech from "expo-speech";
-import { View, Text, SafeAreaView } from "react-native";
-import { save as databaseSave } from "../../database";
+import { View, Text, SafeAreaView, ScrollView, Alert } from "react-native";
+import { getWordOfTheDay, getWordMeaning } from "../../utils";
 import styles from "./styles";
-// import { Colors } from "../../styles/colors";
-import { Button, IconButton, Colors, Searchbar } from "react-native-paper";
+import { Button, Searchbar } from "react-native-paper";
+import { save as databaseSave } from "../../database";
 
-export default function Home() {
-  const [searchQuery, setSearchQuery] = React.useState("");
+export default function Home(props) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchedWord, setSearchedWord] = useState({});
+  const [wordOfTheDay, setWordOfTheDay] = useState({});
 
-  const onChangeSearch = (query) => setSearchQuery(query);
+  useEffect(() => {
+    async function fetchWordOfTheDay() {
+      try {
+        const wordData = await getWordOfTheDay();
+        setWordOfTheDay(wordData);
+      } catch (error) {
+        console.error("Error fetching word of the day:", error);
+      }
+    }
+    fetchWordOfTheDay();
+  }, []);
 
-  const speak = () => {
-    const thingToSay = "1";
+  const onSearch = async () => {
+    if (searchQuery) {
+      try {
+        const meaningData = await getWordMeaning(searchQuery);
+        setSearchedWord({ word: searchQuery, meaning: meaningData });
+      } catch (error) {
+        console.error("Error fetching meaning:", error);
+        setSearchedWord({ word: searchQuery, meaning: "No meaning available" });
+      }
+    } else {
+      setSearchedWord({});
+    }
+  };
+
+  const speak = (word) => {
+    const thingToSay = word || "";
     Speech.speak(thingToSay);
+  };
+
+  const handleAddPress = (wordObj) => {
+    if (wordObj.word && wordObj.meaning) {
+      const data = {
+        word: wordObj.word,
+        meaning: wordObj.meaning,
+      };
+
+      databaseSave(data)
+        .then((id) => {
+          if (id) {
+            data.id = id;
+            props.onAddWord(data);
+            Alert.alert("Database Save", "Word added to favorites.");
+          } else {
+            Alert.alert(
+              "Database Save",
+              "There was an error saving to the database. Please, try again later."
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error saving to the database:", error);
+          Alert.alert(
+            "Database Save",
+            "There was an error saving to the database. Please, try again later."
+          );
+        });
+    }
   };
 
   return (
     <SafeAreaView>
-      <View style={styles.container}>
-        <Text style={styles.title}>Word of the day!</Text>
-        <View style={styles.wordBox}>
-          <View style={styles.wordContainer}>
-            <View style={styles.wordContainerWord}>
-              <Text style={styles.word}>hbhhvb</Text>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.title}>Word of the day!</Text>
+          <View style={styles.wordBox}>
+            <View style={styles.wordContainer}>
+              <View style={styles.wordContainerWord}>
+                <Text style={styles.word}>{wordOfTheDay.word}</Text>
+              </View>
+              <View style={styles.wordContainerWord}>
+                <Button
+                  icon="play-circle"
+                  mode="contained"
+                  onPress={() => speak(wordOfTheDay.word)}
+                  disabled={!wordOfTheDay.word}
+                >
+                  Play
+                </Button>
+              </View>
             </View>
-            <View style={styles.wordContainerWord}>
-              <Button icon="play-circle" mode="contained" onPress={speak}>
-                Play
+            <Text style={styles.meaning}>{wordOfTheDay.meaning}</Text>
+            <View style={styles.buttonContainer}>
+              <Button
+                icon="playlist-star"
+                mode="contained"
+                onPress={() => handleAddPress(wordOfTheDay)}
+              >
+                Add to Favorites
               </Button>
             </View>
           </View>
-          <Text style={styles.meaning}>hbhhvb</Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              icon="playlist-star"
-              mode="contained"
-              onPress={() => console.log("Pressed")}
-            >
-              Add to Favorites
-            </Button>
+          <View style={styles.wordBox}>
+            <View style={styles.searchContainer}>
+              <Searchbar
+                placeholder="Search a Word"
+                onChangeText={(text) => setSearchQuery(text)}
+                value={searchQuery}
+                onIconPress={onSearch}
+                searchAccessibilityLabel="Search" // Accessibility label for search button
+                clearAccessibilityLabel="Clear" // Accessibility label for clear button
+              />
+            </View>
+            {searchQuery !== "" && (
+              <>
+                <View style={styles.wordContainer}>
+                  <View style={styles.wordContainerWord}>
+                    <Text style={styles.word}>{searchedWord.word}</Text>
+                  </View>
+                  <View style={styles.wordContainerWord}>
+                    <Button
+                      icon="play-circle"
+                      mode="contained"
+                      onPress={() => speak(searchedWord.word)}
+                      disabled={!searchedWord.word}
+                    >
+                      Play
+                    </Button>
+                  </View>
+                </View>
+                <Text style={styles.meaning}>{searchedWord.meaning}</Text>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    icon="playlist-star"
+                    mode="contained"
+                    onPress={() => handleAddPress(searchedWord)}
+                  >
+                    Add to Favorites
+                  </Button>
+                </View>
+              </>
+            )}
           </View>
         </View>
-        <View style={styles.wordBox}>
-          <View style={styles.searchContainer}>
-            <Searchbar
-              placeholder="Search a Word"
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-            />
-          </View>
-          <View style={styles.wordContainer}>
-            <View style={styles.wordContainerWord}>
-              <Text style={styles.word}>hbhhvb</Text>
-            </View>
-            <View style={styles.wordContainerWord}>
-              <Button icon="play-circle" mode="contained" onPress={speak}>
-                Play
-              </Button>
-            </View>
-          </View>
-          <Text style={styles.meaning}>hbhhvb</Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              icon="playlist-star"
-              mode="contained"
-              onPress={() => console.log("Pressed")}
-            >
-              Add to Favorites
-            </Button>
-          </View>
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

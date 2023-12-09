@@ -70,7 +70,6 @@ export default function App() {
   useEffect(() => {
     databaseLoad()
       .then((data) => {
-        console.log("dta: ",data)
         setWords(data);
       })
       .catch(() => {
@@ -84,25 +83,13 @@ export default function App() {
       });
   }, []);
 
-  // Include a new Word to the list.
   const handleAddWord = (data) => {
     const updatedWords = [...words];
     updatedWords.push(data);
+    console.log(updatedWords);
     setWords(updatedWords);
   };
 
-  // Toggles the status of a Word.
-  const handleStatusChange = (id) => {
-    const updatedWords = words.map((word) => {
-      if (word.id === id) {
-        word.done = !word.done;
-      }
-      return word;
-    });
-    setWords(updatedWords);
-  };
-
-  // Remove a Word.
   const handleWordRemoval = (id) => {
     const updatedWords = words.filter((word) => word.id !== id);
     setWords(updatedWords);
@@ -121,7 +108,7 @@ export default function App() {
               ),
             }}
           >
-            {(props) => <Home {...props} />}
+            {(props) => <Home {...props} onAddWord={handleAddWord} />}
           </Tab.Screen>
           <Tab.Screen
             name="Favorites"
@@ -140,7 +127,6 @@ export default function App() {
               <Favorites
                 {...props}
                 words={words}
-                onStatusChange={handleStatusChange}
                 onWordRemoval={handleWordRemoval}
               />
             )}
