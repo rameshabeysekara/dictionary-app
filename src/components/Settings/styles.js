@@ -2,9 +2,9 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    //flexDirection: "row",
     alignSelf: "stretch",
-    padding: 20,
+    paddingHorizontal: 15,
+    paddingTop: Platform.OS === "ios" ? 30 : 90,
   },
   label: {
     //flex: 4,
@@ -16,12 +16,12 @@ const styles = StyleSheet.create({
       //flex: 1,
       alignItems: "center",
       flexDirection: "row",
+      justifyContent: "space-between",
       marginTop: 20,
     },
     label: {
       color: "#5e5e5e",
       fontSize: 16,
-      marginLeft: 10,
     },
   },
 });

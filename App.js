@@ -1,18 +1,36 @@
+import * as React from "react";
+import {
+  MD3LightTheme as DefaultTheme,
+  PaperProvider,
+} from "react-native-paper";
+import { name as appName } from "./app.json";
 import { StatusBar } from "expo-status-bar";
-import { Alert, View, SafeAreaView } from "react-native";
-import Header from "./src/components/Header/Header";
-// import Tasks from "./src/components/Tasks/Tasks";
-// import Form from "./src/components/Form/Form";
+import { AppRegistry, Alert, View } from "react-native";
+import Home from "./src/components/Home/Home";
+import Favorites from "./src/components/Favorites/Favorites";
 import Settings from "./src/components/Settings/Settings";
 import styles from "./src/styles/main";
 import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesome, Entypo } from "@expo/vector-icons";
+import { FontAwesome, Entypo, Fontisto } from "@expo/vector-icons";
 import { load as databaseLoad } from "./src/database";
 import * as SplashScreen from "expo-splash-screen";
 import { Colors } from "./src/styles/colors";
 import * as Notifications from "expo-notifications";
+import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const Tab = createMaterialBottomTabNavigator();
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: Colors.primary,
+    secondary: Colors.secondary,
+  },
+};
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -32,9 +50,6 @@ Notifications.setNotificationHandler({
   },
 });
 
-// Creates the tab navigator object.
-const Tab = createBottomTabNavigator();
-
 export default function App() {
   //Listem to received notifcations
   useEffect(() => {
@@ -49,13 +64,14 @@ export default function App() {
     };
   }, []);
 
-  // State for the list of tasks.
-  const [tasks, setTasks] = useState([]);
+  // State for the list of Words.
+  const [words, setWords] = useState([]);
 
   useEffect(() => {
     databaseLoad()
       .then((data) => {
-        setTasks(data);
+        console.log("dta: ",data)
+        setWords(data);
       })
       .catch(() => {
         Alert.alert(
@@ -68,93 +84,82 @@ export default function App() {
       });
   }, []);
 
-  // Include a new task to the list.
-  const handleAddTask = (data) => {
-    const updatedTasks = [...tasks];
-    updatedTasks.push(data);
-    setTasks(updatedTasks);
+  // Include a new Word to the list.
+  const handleAddWord = (data) => {
+    const updatedWords = [...words];
+    updatedWords.push(data);
+    setWords(updatedWords);
   };
 
-  // Toggles the status of a task.
+  // Toggles the status of a Word.
   const handleStatusChange = (id) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        task.done = !task.done;
+    const updatedWords = words.map((word) => {
+      if (word.id === id) {
+        word.done = !word.done;
       }
-      return task;
+      return word;
     });
-    setTasks(updatedTasks);
+    setWords(updatedWords);
   };
 
-  // Remove a task.
-  const handleTaskRemoval = (id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
+  // Remove a Word.
+  const handleWordRemoval = (id) => {
+    const updatedWords = words.filter((word) => word.id !== id);
+    setWords(updatedWords);
   };
 
   return (
-    <NavigationContainer>
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
-        <Header />
+    <PaperProvider theme={theme}>
+      <NavigationContainer>
         <Tab.Navigator>
-          {/* <Tab.Screen
-            name="List"
+          <Tab.Screen
+            name="Home"
             options={{
-              headerShown: false,
-              title: "List Tasks",
-              tabBarActiveTintColor: Colors.primary,
-              tabBarInactiveTintColor: Colors.inactive,
-              tabBarIcon: ({ size, color }) => (
-                <FontAwesome name="list-ul" size={size} color={color} />
+              tabBarLabel: "Home",
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="home" color={color} size={26} />
+              ),
+            }}
+          >
+            {(props) => <Home {...props} />}
+          </Tab.Screen>
+          <Tab.Screen
+            name="Favorites"
+            options={{
+              tabBarLabel: "Favorites",
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons
+                  name="view-list"
+                  color={color}
+                  size={26}
+                />
               ),
             }}
           >
             {(props) => (
-              <Tasks
+              <Favorites
                 {...props}
-                tasks={tasks}
+                words={words}
                 onStatusChange={handleStatusChange}
-                onTaskRemoval={handleTaskRemoval}
+                onWordRemoval={handleWordRemoval}
               />
             )}
-          </Tab.Screen> */}
-          {/* <Tab.Screen
-            name="Add"
-            options={{
-              title: "Add Task",
-              tabBarActiveTintColor: Colors.primary,
-              tabBarInactiveTintColor: Colors.inactive,
-              headerTintColor: Colors.headerText,
-              headerStyle: {
-                backgroundColor: Colors.background,
-              },
-              tabBarIcon: ({ size, color }) => (
-                <Entypo name="add-to-list" size={size} color={color} />
-              ),
-            }}
-          >
-            {(props) => <Form {...props} onAddTask={handleAddTask} />}
-          </Tab.Screen> */}
+          </Tab.Screen>
           <Tab.Screen
             name="Settings"
             options={{
-              title: "Settings",
-              tabBarActiveTintColor: Colors.primary,
-              tabBarInactiveTintColor: Colors.inactive,
-              headerTintColor: Colors.headerText,
-              headerStyle: {
-                backgroundColor: Colors.background,
-              },
-              tabBarIcon: ({ size, color }) => (
-                <Entypo name="cog" size={size} color={color} />
+              tabBarLabel: "Settings",
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="cog" color={color} size={26} />
               ),
             }}
           >
             {(props) => <Settings {...props} />}
           </Tab.Screen>
         </Tab.Navigator>
-      </SafeAreaView>
-    </NavigationContainer>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
+
+AppRegistry.registerComponent(appName, () => Main);

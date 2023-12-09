@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
-import { View, Text, Switch, Pressable, Platform } from "react-native";
+import { View, Pressable, Platform, SafeAreaView } from "react-native";
 import { save as databaseSave } from "../../database";
 import styles from "./styles";
 import * as Notifications from "expo-notifications";
 import { Colors } from "../../styles/colors";
+import {
+  List,
+  IconButton,
+  Paragraph,
+  Title,
+  Button,
+  Switch,
+  Text,
+} from "react-native-paper";
 
-export default function Setiings() {
+export default function Settings() {
   const [reminder, setReminder] = useState(false);
   const [schedule, setSchedule] = useState([]);
 
@@ -44,15 +53,19 @@ export default function Setiings() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Receive daily notifications</Text>
-      <View style={styles.switch.container}>
-        <Switch value={reminder} onValueChange={handleReminderPress} />
-        <Pressable onPress={handleReminderPress}>
-          <Text style={styles.switch.label}>Set Daily Reminder</Text>
-        </Pressable>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <Title>Notifications</Title>
+        <View style={styles.switch.container}>
+          <Pressable onPress={handleReminderPress}>
+            <Text style={styles.switch.label}>
+              Set word of the day Reminder
+            </Text>
+          </Pressable>
+          <Switch value={reminder} onValueChange={handleReminderPress} />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -75,7 +88,7 @@ async function scheduleReminder() {
     const schedulingOptions = {
       content: {
         title: "Todo Reminder",
-        body: "Remember to check your tasks",
+        body: "Remember to check your words",
       },
       trigger,
     };
