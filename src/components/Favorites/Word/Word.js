@@ -3,6 +3,8 @@ import { View, Pressable, Modal, Alert } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import * as database from "../../../database";
 import { List, Title, Paragraph, Button } from "react-native-paper";
+import styles from "./styles";
+import { Colors } from "../../../styles/colors";
 
 export default function Word(props) {
   const [showModal, setShowModal] = useState(false);
@@ -59,7 +61,7 @@ export default function Word(props) {
           <View style={styles.modal.box}>
             <Pressable onPress={handleModalToggle}>
               <View style={styles.close.container}>
-                <AntDesign name="closesquare" size={25} />
+                <AntDesign name="closesquare" size={25} color={Colors.text}/>
               </View>
             </Pressable>
 
