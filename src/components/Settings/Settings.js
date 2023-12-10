@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Pressable, SafeAreaView, Text, Platform } from "react-native";
+import { View, Pressable, SafeAreaView, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { Title, Switch } from "react-native-paper";
 import styles from "./styles";

@@ -31,7 +31,6 @@ export async function getWordMeaning(word) {
 
     return "No meaning available";
   } catch (error) {
-    console.error("Error fetching meaning:", error);
     return "No meaning available";
   }
 }
@@ -51,20 +50,25 @@ async function getRandomWords(number) {
 export async function getWordOfTheDay() {
   try {
     const randomWords = await getRandomWords(10);
-    let selectedWord;
-    for (const word of randomWords) {
-      const meaning = await getWordMeaning(word);
-      if (meaning) {
-        selectedWord = { word, meaning };
-        break;
+    let selectedWord = null;
+    let attempts = 0;
+
+    while (!selectedWord && attempts < randomWords.length) {
+      const meaning = await getWordMeaning(randomWords[attempts]);
+
+      if (meaning && meaning !== 'No meaning available') {
+        selectedWord = { word: randomWords[attempts], meaning };
       }
+
+      attempts++;
     }
+
     if (!selectedWord) {
-      getWordOfTheDay();
+      return { word: "No word found", meaning: "No meaning available" };
     }
+
     return selectedWord;
   } catch (error) {
-    console.error(error);
     return { word: "Error occurred", meaning: "No meaning available" };
   }
 }

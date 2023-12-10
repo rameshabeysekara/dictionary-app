@@ -6,7 +6,6 @@ import styles from "./styles";
 import {
   Button,
   Searchbar,
-  Card,
   Title,
   Text,
   Paragraph,
